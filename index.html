@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Zone01 GraphQL Profile – Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body class="app app--centered">
+    <main class="auth-layout">
+      <section class="card card--auth">
+        <header class="card__header">
+          <h1 class="card__title">Zone01 Profile</h1>
+          <p class="card__subtitle">Sign in to view your statistics</p>
+        </header>
+
+        <form id="login-form" class="form">
+          <div class="form__field">
+            <label for="identifier" class="form__label">Username or Email</label>
+            <input
+              id="identifier"
+              name="identifier"
+              type="text"
+              class="form__input"
+              autocomplete="username"
+              required
+            />
+          </div>
+
+          <div class="form__field">
+            <label for="password" class="form__label">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              class="form__input"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+
+          <button type="submit" class="button button--primary" id="login-submit">
+            Sign in
+          </button>
+
+          <p id="login-error" class="form__error" aria-live="polite"></p>
+        </form>
+
+        <footer class="card__footer card__footer--muted">
+          <small>Uses your Zone01 platform credentials over HTTPS.</small>
+        </footer>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
+
+

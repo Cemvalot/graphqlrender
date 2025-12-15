@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Zone01 GraphQL Profile – Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body class="app">
+    <header class="topbar">
+      <div class="topbar__brand">
+        <span class="topbar__logo">Z01</span>
+        <span class="topbar__title">GraphQL Profile</span>
+      </div>
+      <div class="topbar__actions">
+        <span id="topbar-username" class="topbar__user"></span>
+        <button id="logout-btn" class="button button--ghost">Logout</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="layout__section">
+        <h2 class="section__title">Profile Overview</h2>
+        <div class="grid grid--cards">
+          <article class="card">
+            <h3 class="card__title">Identity</h3>
+            <p class="stat stat--primary" id="stat-name">—</p>
+          </article>
+
+          <article class="card">
+            <h3 class="card__title">Total XP (div-01)</h3>
+            <p class="stat" id="stat-total-xp">—</p>
+          </article>
+
+          <article class="card">
+            <h3 class="card__title">Audit Ratio</h3>
+            <p class="stat" id="stat-audit-ratio">—</p>
+            <p class="stat__meta" id="stat-audit-meta">Up: — · Down: —</p>
+          </article>
+
+          <article class="card">
+            <h3 class="card__title">Level</h3>
+            <p class="stat" id="stat-level">—</p>
+          </article>
+
+          <article class="card card--wide">
+            <h3 class="card__title">Top Skills</h3>
+            <ul id="skills-list" class="list list--chips"></ul>
+            <p id="skills-empty" class="text--muted hidden">
+              No skill data yet.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="layout__section">
+        <h2 class="section__title">XP by Project</h2>
+        <div class="card card--table">
+          <div class="table-wrapper">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Project</th>
+                  <th>Type</th>
+                  <th>Date</th>
+                  <th class="table__numeric">XP</th>
+                </tr>
+              </thead>
+              <tbody id="xp-project-table-body"></tbody>
+            </table>
+          </div>
+          <p id="xp-project-empty" class="text--muted hidden">
+            No XP transactions found for /athens/div-01 yet.
+          </p>
+        </div>
+      </section>
+
+      <section class="layout__section">
+        <div class="layout__section-header">
+          <h2 class="section__title">Statistics</h2>
+          <p class="section__subtitle">Pure SVG, powered by GraphQL</p>
+        </div>
+
+        <div class="grid grid--cards grid--charts">
+          <article class="card card--chart">
+            <h3 class="card__title">XP Over Time</h3>
+            <div id="xp-line-chart" class="chart"></div>
+          </article>
+
+          <article class="card card--chart">
+            <h3 class="card__title">Audit Ratio</h3>
+            <div id="audit-donut-chart" class="chart chart--centered"></div>
+          </article>
+
+          <article class="card card--chart">
+            <h3 class="card__title">Top Skills Distribution</h3>
+            <div id="skills-bar-chart" class="chart"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="layout__section">
+        <div class="layout__section-header">
+          <h2 class="section__title">GraphiQL Interface</h2>
+          <div class="tooltip-wrapper">
+            <button id="graphql-help-btn" class="button button--ghost" style="padding: 4px 8px; font-size: 12px;" aria-label="Help">
+              <span style="font-size: 14px;">ℹ️</span>
+            </button>
+            <div id="graphql-help-tooltip" class="tooltip-content hidden">
+              <h4>How to use GraphiQL:</h4>
+              <ul style="margin: 8px 0; padding-left: 20px; font-size: 13px;">
+                <li><strong>Query:</strong> Write your GraphQL query (only queries allowed)</li>
+                <li><strong>Variables:</strong> JSON object for query variables (optional)</li>
+                <li><strong>Execute:</strong> Run query (Ctrl+Enter)</li>
+                <li><strong>Format:</strong> Beautify query syntax</li>
+                <li><strong>Examples:</strong> Load sample queries from dropdown</li>
+              </ul>
+              <p style="margin: 8px 0 0; font-size: 12px; color: var(--color-text-muted);">
+                💡 Tip: Use <kbd>Ctrl+Enter</kbd> to execute quickly
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="graphql-controls">
+            <div class="graphql-examples-wrapper">
+              <label for="graphql-examples" class="form__label" style="margin: 0;">Quick Examples:</label>
+              <select id="graphql-examples" class="form__input" style="padding: 6px 8px; font-size: 13px;">
+                <option value="">Select an example...</option>
+                <option value="user">User Info</option>
+                <option value="transactions">XP Transactions</option>
+                <option value="skills">Skills</option>
+                <option value="object">Object by ID</option>
+              </select>
+            </div>
+            <div class="graphql-buttons">
+              <button id="graphql-execute-btn" class="button button--primary" title="Execute query (Ctrl+Enter)">
+                ▶ Execute
+              </button>
+              <button id="graphql-format-btn" class="button button--secondary" title="Format query">
+                ✨ Format
+              </button>
+              <button id="graphql-clear-btn" class="button button--ghost" title="Clear all">
+                🗑️ Clear
+              </button>
+            </div>
+          </div>
+
+          <div class="graphql-editor-grid">
+            <div class="graphql-editor-panel">
+              <div class="panel-header">
+                <label class="form__label" style="margin: 0;">Query</label>
+                <span class="panel-status" id="query-status"></span>
+              </div>
+              <div class="editor-wrapper">
+                <textarea 
+                  id="graphql-query-input" 
+                  class="graphql-editor" 
+                  rows="16"
+                  spellcheck="false"
+                  placeholder="query {
+  user {
+    firstName
+    lastName
+    totalXP: transactions_aggregate(
+      where: {type: {_eq: &quot;xp&quot;}}
+    ) {
+      aggregate {
+        sum { amount }
+      }
+    }
+  }
+}"></textarea>
+                <div class="editor-line-numbers" id="query-line-numbers"></div>
+              </div>
+            </div>
+
+            <div class="graphql-editor-panel">
+              <div class="panel-header">
+                <label class="form__label" style="margin: 0;">Variables (JSON)</label>
+                <span class="panel-status" id="vars-status"></span>
+              </div>
+              <div class="editor-wrapper">
+                <textarea 
+                  id="graphql-variables-input" 
+                  class="graphql-editor" 
+                  rows="16"
+                  spellcheck="false"
+                  placeholder='{
+  "id": 123
+}'>{}</textarea>
+                <div class="editor-line-numbers" id="vars-line-numbers"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="graphql-response-panel">
+            <div class="panel-header">
+              <label class="form__label" style="margin: 0;">Response</label>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="response-status" id="response-status">Ready</span>
+                <button id="graphql-copy-btn" class="button button--ghost" style="padding: 4px 8px; font-size: 12px;" title="Copy response">
+                  📋 Copy
+                </button>
+              </div>
+            </div>
+            <pre id="graphql-response" class="graphql-response"></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="layout__section">
+        <h2 class="section__title">GraphQL Query Tester</h2>
+        <div class="card">
+          <form id="object-query-form" class="form form--inline">
+            <label for="object-id" class="form__label">Fetch object by id:</label>
+            <input
+              id="object-id"
+              name="object-id"
+              type="number"
+              min="1"
+              class="form__input form__input--compact"
+              placeholder="Enter object ID"
+              required
+            />
+            <button type="submit" class="button button--secondary">
+              Run Query
+            </button>
+          </form>
+
+          <div id="available-object-ids" style="margin-top: 16px; margin-bottom: 12px; font-size: 13px; color: var(--color-text-muted);">
+            <strong>Available Object IDs from your projects:</strong>
+            <div id="object-id-list" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+              <span style="font-style: italic;">Loading...</span>
+            </div>
+            <p style="margin-top: 8px; font-size: 12px;">Click an ID above to use it, or enter your own.</p>
+          </div>
+
+          <pre id="object-query-result" class="code-block" style="margin-top: 12px; min-height: 60px;"></pre>
+        </div>
+      </section>
+
+    </main>
+
+    <div id="global-loading" class="loading loading--overlay hidden">
+      <div class="spinner"></div>
+    </div>
+
+    <script type="module" src="/src/profile.js"></script>
+  </body>
+</html>
+
+
