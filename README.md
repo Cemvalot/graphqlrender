@@ -30,6 +30,20 @@ npm run test:coverage # Run tests with coverage
 
 ### Deploy
 
+#### Render
+1. **Using Render Blueprint (Recommended)**:
+   - Push your code to GitHub/GitLab/Bitbucket
+   - Connect your repository to Render
+   - Render will automatically detect the `render.yaml` file
+   - The static site will be built and deployed automatically
+
+2. **Manual Setup**:
+   - Create a new **Static Site** on Render
+   - Connect your repository
+   - Build Command: `npm install && npm run build`
+   - Publish Directory: `dist`
+   - Environment: Static Site
+
 #### Netlify
 - Build: `npm run build`
 - Publish: `dist`
