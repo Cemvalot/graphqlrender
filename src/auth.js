@@ -1,7 +1,16 @@
-// Use proxy in development, direct URL in production
-const SIGNIN_URL = import.meta.env.DEV 
-  ? "/api/auth/signin"
-  : "https://platform.zone01.gr/api/auth/signin";
+// Use proxy in development, or if VITE_PROXY_URL is set
+// Otherwise try direct URL (may fail due to CORS)
+const getSigninUrl = () => {
+  if (import.meta.env.DEV) {
+    return "/api/auth/signin";
+  }
+  const proxyUrl = import.meta.env.VITE_PROXY_URL;
+  if (proxyUrl) {
+    return `${proxyUrl}/api/auth/signin`;
+  }
+  return "https://platform.zone01.gr/api/auth/signin";
+};
+const SIGNIN_URL = getSigninUrl();
 const TOKEN_KEY = "zone01_jwt";
 
 export function getToken() {

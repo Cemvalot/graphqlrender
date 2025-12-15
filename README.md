@@ -31,16 +31,30 @@ npm run test:coverage # Run tests with coverage
 ### Deploy
 
 #### Render
+
+Due to CORS restrictions, you need to deploy two services:
+
+**1. Deploy Proxy Service (Web Service):**
 1. Go to [Render Dashboard](https://dashboard.render.com)
-2. Click **"New +"** → **"Static Site"**
-3. Connect your GitHub/GitLab/Bitbucket repository
-4. Configure the following settings:
-   - **Name**: `graphql-profile` (or your preferred name)
-   - **Branch**: `main` (or your default branch)
+2. Click **"New +"** → **"Blueprint"**
+3. Connect your repository
+4. Render will detect `render.yaml` and create the proxy service
+5. Click **"Apply"** to deploy
+6. **Note the proxy service URL** (e.g., `https://graphql-profile-proxy.onrender.com`)
+
+**2. Deploy Static Site:**
+1. In Render Dashboard, click **"New +"** → **"Static Site"**
+2. Connect your repository
+3. Configure:
+   - **Name**: `graphql-profile`
+   - **Branch**: `main`
    - **Build Command**: `npm install && npm run build`
    - **Publish Directory**: `dist`
+4. **Add Environment Variable:**
+   - Key: `VITE_PROXY_URL`
+   - Value: `https://graphql-profile-proxy.onrender.com` (use your actual proxy URL)
 5. Click **"Create Static Site"**
-6. Wait for the build to complete - your site will be live automatically!
+6. Wait for both services to deploy
 
 #### Netlify
 - Build: `npm run build`

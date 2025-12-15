@@ -1,9 +1,18 @@
 import { getToken, logout } from "./auth.js";
 
-// Use proxy in development, direct URL in production
-const GRAPHQL_URL = import.meta.env.DEV
-  ? "/api/graphql-engine/v1/graphql"
-  : "https://platform.zone01.gr/api/graphql-engine/v1/graphql";
+// Use proxy in development, or if VITE_PROXY_URL is set
+// Otherwise try direct URL (may fail due to CORS)
+const getGraphQLUrl = () => {
+  if (import.meta.env.DEV) {
+    return "/api/graphql-engine/v1/graphql";
+  }
+  const proxyUrl = import.meta.env.VITE_PROXY_URL;
+  if (proxyUrl) {
+    return `${proxyUrl}/api/graphql-engine/v1/graphql`;
+  }
+  return "https://platform.zone01.gr/api/graphql-engine/v1/graphql";
+};
+const GRAPHQL_URL = getGraphQLUrl();
 
 /**
  * Generic GraphQL request helper.
