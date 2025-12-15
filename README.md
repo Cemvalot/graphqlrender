@@ -28,6 +28,30 @@ npm run test:ui    # Run tests with UI
 npm run test:coverage # Run tests with coverage
 ```
 
+### Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```bash
+# Server Configuration
+PORT=10000
+
+# Environment (development or production)
+NODE_ENV=development
+
+# CORS Configuration
+# In production, this MUST be set to your allowed origins (comma-separated)
+# Example: ALLOWED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
+# For development, you can leave this unset (will default to *)
+ALLOWED_ORIGINS=
+```
+
+**Important for Production:**
+- `ALLOWED_ORIGINS` is **REQUIRED** in production - the server will not start without it
+- Set `NODE_ENV=production` to enable all security features
+- For Render deployment: Set `ALLOWED_ORIGINS` in the Render Dashboard after services are created (see deployment instructions)
+- Format: `https://service1.onrender.com,https://service2.onrender.com` (comma-separated, no spaces)
+
 ### Deploy
 
 #### Render
@@ -40,21 +64,37 @@ Due to CORS restrictions, you need to deploy two services:
 3. Connect your repository
 4. Render will detect `render.yaml` and create the proxy service
 5. Click **"Apply"** to deploy
-6. **Note the proxy service URL** (e.g., `https://graphql-profile-proxy.onrender.com`)
+6. **Wait for deployment to complete**
+7. **Note the proxy service URL** (e.g., `https://graphql-profile-proxy.onrender.com`)
+8. **IMPORTANT - Set CORS after deployment:**
+   - Go to your proxy service → **Environment** tab
+   - Add/Edit `ALLOWED_ORIGINS` environment variable
+   - Set value to: `https://graphql-profile-proxy.onrender.com,https://your-static-site-name.onrender.com`
+   - (You'll update this again after creating the static site)
+   - Click **"Save Changes"** - service will restart
 
 **2. Deploy Static Site:**
 1. In Render Dashboard, click **"New +"** → **"Static Site"**
 2. Connect your repository
 3. Configure:
-   - **Name**: `graphql-profile`
+   - **Name**: `graphql-profile` (or your preferred name)
    - **Branch**: `main`
    - **Build Command**: `npm install && npm run build`
    - **Publish Directory**: `dist`
 4. **Add Environment Variable:**
    - Key: `VITE_PROXY_URL`
-   - Value: `https://graphql-profile-proxy.onrender.com` (use your actual proxy URL)
+   - Value: `https://graphql-profile-proxy.onrender.com` (use your actual proxy URL from step 6)
 5. Click **"Create Static Site"**
-6. Wait for both services to deploy
+6. **Wait for deployment to complete**
+7. **Note the static site URL** (e.g., `https://graphql-profile.onrender.com`)
+
+**3. Update CORS in Proxy Service:**
+1. Go back to your proxy service → **Environment** tab
+2. Update `ALLOWED_ORIGINS` to include both URLs:
+   - Value: `https://graphql-profile-proxy.onrender.com,https://graphql-profile.onrender.com`
+   - (Replace with your actual service names)
+3. Click **"Save Changes"**
+4. Your services should now work together!
 
 #### Netlify
 - Build: `npm run build`
