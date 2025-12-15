@@ -1,6 +1,0 @@
-services:
-  - type: static_site
-    name: graphql-profile
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
-

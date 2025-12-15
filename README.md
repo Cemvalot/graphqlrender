@@ -31,18 +31,16 @@ npm run test:coverage # Run tests with coverage
 ### Deploy
 
 #### Render
-1. **Using Render Blueprint (Recommended)**:
-   - Push your code to GitHub/GitLab/Bitbucket
-   - Connect your repository to Render
-   - Render will automatically detect the `render.yaml` file
-   - The static site will be built and deployed automatically
-
-2. **Manual Setup**:
-   - Create a new **Static Site** on Render
-   - Connect your repository
-   - Build Command: `npm install && npm run build`
-   - Publish Directory: `dist`
-   - Environment: Static Site
+1. Go to [Render Dashboard](https://dashboard.render.com)
+2. Click **"New +"** → **"Static Site"**
+3. Connect your GitHub/GitLab/Bitbucket repository
+4. Configure the following settings:
+   - **Name**: `graphql-profile` (or your preferred name)
+   - **Branch**: `main` (or your default branch)
+   - **Build Command**: `npm install && npm run build`
+   - **Publish Directory**: `dist`
+5. Click **"Create Static Site"**
+6. Wait for the build to complete - your site will be live automatically!
 
 #### Netlify
 - Build: `npm run build`
