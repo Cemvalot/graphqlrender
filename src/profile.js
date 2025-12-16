@@ -1,6 +1,6 @@
 import { getToken, logout } from "./auth.js";
 import { gqlRequest, PROFILE_QUERY, ONE_OBJECT_QUERY, ONE_OBJECT_QUERY_ALT, ONE_OBJECT_VIA_TRANSACTION } from "./gql.js";
-import { renderXpOverTimeLineChart, renderAuditDonutChart, renderSkillsBarChart } from "./graphs.js";
+import { renderXpOverTimeLineChart, renderAuditDonutChart, renderSkillsBarChart, formatBytes } from "./graphs.js";
 import { escapeHtml, validateInput, checkRateLimit } from "./utils.js";
 
 const loadingOverlay = document.getElementById("global-loading");
@@ -63,14 +63,6 @@ function renderInfoCards(user) {
   if (topbarUsername) topbarUsername.textContent = fullName;
 
   if (totalXpEl) totalXpEl.textContent = `${totalXP.toLocaleString()} XP`;
-
-  // Format bytes to KB/MB
-  function formatBytes(bytes) {
-    if (bytes === 0) return "0";
-    if (bytes < 1024) return bytes.toLocaleString();
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + " kB";
-    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
-  }
 
   // Calculate ratio: Done / Received
   const ratio =
@@ -162,9 +154,9 @@ function renderXpProjectTable(xpProjects) {
     }
 
     tr.innerHTML = `
-      <td>${name}</td>
-      <td>${type}</td>
-      <td>${date}</td>
+      <td>${escapeHtml(name)}</td>
+      <td>${escapeHtml(type)}</td>
+      <td>${escapeHtml(date)}</td>
       <td class="table__numeric">${amount.toLocaleString()}</td>
     `;
 
@@ -226,8 +218,9 @@ function updateAvailableObjectIds(ids, idToName = new Map()) {
 
   container.innerHTML = ids.map(id => {
     const name = idToName.get(id) || '';
-    const label = name ? `${id} (${name})` : id;
-    return `<button type="button" class="chip" data-object-id="${id}" style="cursor: pointer; transition: all 0.2s;">${label}</button>`;
+    const escapedName = escapeHtml(name);
+    const label = name ? `${id} (${escapedName})` : String(id);
+    return `<button type="button" class="chip" data-object-id="${id}" style="cursor: pointer; transition: all 0.2s;">${escapeHtml(label)}</button>`;
   }).join('');
 
   // Add click handlers to each button
