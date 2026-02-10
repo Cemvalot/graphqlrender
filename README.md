@@ -102,3 +102,7 @@ Test coverage includes:
 2. **Nested Query**: `user { xp_project { object { name } } }`
 3. **Arguments Query**: `transactions(where: {type: {_eq: "xp"}})`
 4. **Aggregate Query**: `transactions_aggregate { aggregate { sum { amount } } }`
+
+### License
+
+This project is licensed under the MIT License – see the `LICENSE` file for details.
